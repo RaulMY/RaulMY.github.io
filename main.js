@@ -17,6 +17,8 @@ var gameStatus=0;
 var createUnit=0;
 var oracleTrue=false;
 var exploFrames="Hola";
+var stopGame=0;
+var winners = [{name: "RAU", score: 1, health: 1000},{name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}]
 
 
 function startGame(){
@@ -25,7 +27,7 @@ function startGame(){
     myBattleArea.drawBoard();
     mothership = new Mothership(-myBattleArea.canvas.height/2+50, 0, 500);
     mothership.draw();
-    player = new Player(300, 300, 100);
+    player = new Player(300, 300, 10);
     player.draw();
 };
 
@@ -37,7 +39,6 @@ function updateBattleArea(){
     mothership.draw();
     player.draw();
     player.beamsDraw();
-    myBattleArea.score();
     exploFrames++;
     //Crear Suicidas
     if (myBattleArea.frames%50===0){
@@ -136,6 +137,8 @@ function updateBattleArea(){
             player.health-=enemy.damage;
             if (player.health<=0){
                 // Game Ends
+                myBattleArea.stop();
+                return;
             }
             myBattleArea.enemies.splice(index,1);
         }
@@ -148,6 +151,8 @@ function updateBattleArea(){
             myBattleArea.enemies.splice(index,1);
             if (mothership.health<=0){
                 // Game Ends
+                myBattleArea.stop();
+                return;
             }
         }
         myBattleArea.units.forEach(function(unit, indexU){
@@ -224,6 +229,8 @@ function updateBattleArea(){
             myBattleArea.balls.splice(indexC,1);
                 if (player.health<=0){
                     //Game ends
+                    myBattleArea.stop();
+                    return;
                 }
         }
         if (ball.crashWith(mothership)){
@@ -231,6 +238,8 @@ function updateBattleArea(){
             myBattleArea.balls.splice(indexC,1);
                 if (mothership.health<=0){
                     //Game ends
+                    myBattleArea.stop();
+                    return;
                 }
         }
         
@@ -241,8 +250,59 @@ function updateBattleArea(){
         }
         myBattleArea.ctx.drawImage(explosion, exploX, exploY, 25, 25);
       }
+
+    myBattleArea.score();
+    if (stopGame===1){
+        myBattleArea.ctx.clearRect(0,0,myBattleArea.canvas.width, myBattleArea.canvas.height);
+        myBattleArea.ctx.fillStyle="black";
+        myBattleArea.ctx.fillRect(0,0, myBattleArea.canvas.width, myBattleArea.canvas.height);
+        myBattleArea.ctx.font="40px serif";
+        myBattleArea.ctx.fillStyle="white"
+        if (Math.floor(myBattleArea.frames/100)>=winners[0].score){
+            winners.pop();
+            myBattleArea.ctx.fillText("HIGH SCORE!", 460, 50);
+            myBattleArea.ctx.fillText("Final Score: "+Math.floor(myBattleArea.frames/100)+" Health: "+mothership.health, 450, 150)
+            myBattleArea.ctx.fillText("TYPE NAME", 460, 250);
+            var letterCounter=0;
+            winName="";
+            document.onkeydown=function(e){
+                if (letterCounter<3 && e.keyCode>=65 && e.keyCode<=90){
+                myBattleArea.ctx.fillText(e.key.toUpperCase(), 480+letterCounter*30, 300);
+                
+                winName+=e.key.toUpperCase();
+                letterCounter++;
+                } else if (letterCounter===3){
+                    letterCounter++;
+                    updateHigh();
+                }
+            } 
+        } else{
+            
+            
+            myBattleArea.ctx.fillText("TOP DEFENDERS", 450, 50);
+            myBattleArea.ctx.font="30px serif";
+            myBattleArea.ctx.fillStyle="green"
+            myBattleArea.ctx.fillText("Final Score: "+Math.floor(myBattleArea.frames/100)+" Health: "+mothership.health, 450, 150)
+            myBattleArea.ctx.fillStyle="white"
+            for (var w=0; w<winners.length; w++){
+            
+                myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
+            }
+        }
+        
+    }
 }
     
+function updateHigh(){
+    myBattleArea.ctx.fillStyle="black";
+    myBattleArea.ctx.fillRect(0,0, myBattleArea.canvas.width, myBattleArea.canvas.height);
+    myBattleArea.ctx.fillStyle="white";
+    myBattleArea.ctx.fillText("TOP DEFENDERS", 450, 50);
+    winners.unshift({name: winName, score: Math.floor(myBattleArea.frames/100), health: mothership.health});
+    for (var w=0; w<winners.length; w++){        
+        myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
+    }
+}
 document.onkeydown=function(e){
     switch (e.keyCode){
         case 37:
