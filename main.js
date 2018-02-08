@@ -18,11 +18,16 @@ var createUnit=0;
 var oracleTrue=false;
 var exploFrames="Hola";
 var stopGame=0;
-var winners = [{name: "RAU", score: 1, health: 1000},{name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}]
-
+var winners = [{name: "RAU", score: 10, health: 1000},{name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}]
+var notEnough = new Audio('notEnoughResources.mp3');
+var oracleAudio = new Audio('oracleShield.mp3');
+var tempestAudio = new Audio("tempest.wav");
+var replicantAudio = new Audio("replicant.wav");
+var theme = document.getElementById("music");
+theme.volume = 0.5;
 
 function startGame(){
-    resources = 100000;
+    resources = 500;
     myBattleArea.start();
     myBattleArea.drawBoard();
     mothership = new Mothership(-myBattleArea.canvas.height/2+50, 0, 500);
@@ -258,6 +263,7 @@ function updateBattleArea(){
         myBattleArea.ctx.fillRect(0,0, myBattleArea.canvas.width, myBattleArea.canvas.height);
         myBattleArea.ctx.font="40px serif";
         myBattleArea.ctx.fillStyle="white"
+        gameStatus=0;
         if (Math.floor(myBattleArea.frames/100)>=winners[0].score){
             winners.pop();
             myBattleArea.ctx.fillText("HIGH SCORE!", 460, 50);
@@ -288,6 +294,11 @@ function updateBattleArea(){
             
                 myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
             }
+            document.onkeydown=function(e){
+                if (e.keyCode===13){
+                    location.reload();
+                }
+            } 
         }
         
     }
@@ -302,7 +313,13 @@ function updateHigh(){
     for (var w=0; w<winners.length; w++){        
         myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
     }
+    document.onkeydown=function(e){
+        if (e.keyCode===13){
+            location.reload();
+        }
+    } 
 }
+
 document.onkeydown=function(e){
     switch (e.keyCode){
         case 37:
@@ -349,23 +366,32 @@ myBattleArea.canvas.addEventListener('click', function(e) {
         switch(unitCreate){
             case "replicant":
             if (resources>=100){
+                replicantAudio.play();
                 resources-=100;
                 myBattleArea.units.push(new Replicant(e.pageX-myBattleArea.canvas.offsetLeft-37.5, e.pageY-myBattleArea.canvas.offsetTop-37.5,100))
-            };
+            } else{
+                notEnough.play();
+            }
             createUnit=0;
             break;
             case "tempest":
             if (resources>=200){
+                tempestAudio.play();
                 resources-=200;
                 myBattleArea.units.push(new Tempest(e.pageX-myBattleArea.canvas.offsetLeft-50, e.pageY-myBattleArea.canvas.offsetTop-50,100))
+            }else{
+                notEnough.play();
             };
             createUnit=0;
             break;
             case "oracle":
             if (resources>=500 && oracleTrue===false){
+                oracleAudio.play();
                 oracleTrue=true;
                 resources-=500;
                 myBattleArea.units.push(new Oracle(e.pageX-myBattleArea.canvas.offsetLeft-37.5, e.pageY-myBattleArea.canvas.offsetTop-37.5,100))
+            }else{
+                notEnough.play();
             };
             createUnit=0;
             break;
