@@ -25,6 +25,7 @@ var tempestAudio = new Audio("tempest.wav");
 var replicantAudio = new Audio("replicant.wav");
 var theme = document.getElementById("music");
 theme.volume = 0.5;
+var difficulty =1;
 
 function startGame(){
     resources = 500;
@@ -45,22 +46,24 @@ function updateBattleArea(){
     player.draw();
     player.beamsDraw();
     exploFrames++;
+    if (myBattleArea.frames%1000===0){
+        difficulty++;
+    }
     //Crear Suicidas
     if (myBattleArea.frames%50===0){
-        myBattleArea.enemies.push(new Suicide(myBattleArea.canvas.width, 20+(Math.random()*(myBattleArea.canvas.height-20)),10));
-    }
-    //Aumentar el ratio de Suicidas, y crear Corruptores
-    if (myBattleArea.frames>100){
-        if (myBattleArea.frames%50===0){
+        for (var c=0; c<difficulty; c++){
             myBattleArea.enemies.push(new Suicide(myBattleArea.canvas.width, 20+(Math.random()*(myBattleArea.canvas.height-20)),10));
         }
-        if (myBattleArea.frames%500===0){
-            myBattleArea.enemies.push(new Corruptor(myBattleArea.canvas.width, 100+(Math.random()*(myBattleArea.canvas.height-200)),100));
+    }
+    //Crear Corruptores
+    if (myBattleArea.frames%400===0){
+        for (var c=0; c<difficulty; c++){
+        myBattleArea.enemies.push(new Corruptor(myBattleArea.canvas.width, 100+(Math.random()*(myBattleArea.canvas.height-200)),100));
         }
     }
     //Crear Broodlords
-    if (myBattleArea.frames>200){
-        if (myBattleArea.frames%500===0){
+    if (myBattleArea.frames%500===0){
+        for (var c=0; c<difficulty; c++){
             myBattleArea.enemies.push(new Broodlord(myBattleArea.canvas.width, 100+(Math.random()*(myBattleArea.canvas.height-200)),100));
         }
     }
