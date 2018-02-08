@@ -17,15 +17,7 @@ var gameStatus=0;
 var createUnit=0;
 var oracleTrue=false;
 var exploFrames="Hola";
-window.onload = function() {
-    
-    document.getElementById("start-button").onclick = function() {
-        if (gameStatus===0){
-        gameStatus=1;
-        startGame();
-      }
-    }
-};
+
 
 function startGame(){
     resources = 100000;
