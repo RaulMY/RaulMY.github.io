@@ -44,6 +44,14 @@ if (localStorage.getItem("FirstName")===null){
     localStorage.setItem("ThirdScore", winners[2].score);
     localStorage.setItem("ThirdHealth", winners[2].health);
 
+    localStorage.setItem("FourthName", winners[3].name);
+    localStorage.setItem("FourthScore", winners[3].score);
+    localStorage.setItem("FourthHealth", winners[3].health);
+
+    localStorage.setItem("FifthName", winners[4].name);
+    localStorage.setItem("FifthScore", winners[4].score);
+    localStorage.setItem("FifthHealth", winners[4].health);
+
 }
 
 winners = [{name: localStorage.getItem("FirstName"), score: localStorage.getItem("FirstScore"), health: localStorage.getItem("FirstHealth")}, {name: localStorage.getItem("SecondName"), score: localStorage.getItem("SecondScore"), health: localStorage.getItem("SecondHealth")},{name: localStorage.getItem("ThirdName"), score: localStorage.getItem("ThirdScore"), health: localStorage.getItem("ThirdHealth")}, {name: localStorage.getItem("FourthName"), score: localStorage.getItem("FourthScore"), health: localStorage.getItem("FourthHealth")},{name: localStorage.getItem("FifthName"), score: localStorage.getItem("FifthScore"), health: localStorage.getItem("FifthHealth")}]
