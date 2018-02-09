@@ -1,18 +1,24 @@
 
 var mothershipSprite = new Image;
 mothershipSprite.src = "images/mothership.png"
+var mothershipRotate = new Image;
+mothershipRotate.src = "images/mothershipRotate.png"
 var hero = new Image;
 hero.src= "images/phoenix.png";
 var beam = new Image;
 beam.src = "images/shoot.png";
 var replicant = new Image;
 replicant.src = "images/replicant.png";
+var replicantRotate = new Image;
+replicantRotate.src = "images/replicantRotate.png";
 var energyShield = new Image;
 energyShield.src = "images/energyShield.png"
 var tempest = new Image;
 tempest.src = "images/tempest.png";
 var energyBall = new Image;
 energyBall.src = "images/energyBall.png"
+var energyBallRotate = new Image;
+energyBallRotate.src = "images/energyBallRotate.png"
 var oracle = new Image;
 oracle.src = "images/oracle.png";
 var paralyzeField = new Image;
@@ -108,13 +114,27 @@ Beam.prototype.crashWith = function(unit){
 
 function Replicant(x,y, health){
     Unit.call(this, x, y, health);
-    this.img = replicant;
+    this.img = replicantRotate;
     this.width = 75;
     this.height = 75;
     this.type="R";
     this.energy=500;
     this.maxEnergy=500;
     this.recharge=0;
+    this.draw = function(){
+        if (this.energy>0){
+            myBattleArea.ctx.drawImage(this.img, spriteFrames*320, 0, 320, 300, this.x, this.y, this.width, this.height);
+        } else {
+            myBattleArea.ctx.drawImage(this.img, 0, 0, 320, 300, this.x, this.y, this.width, this.height); 
+        }
+        myBattleArea.ctx.fillStyle= "white";
+        myBattleArea.ctx.fillRect(this.x, this.y - 30, this.width, 5);
+        myBattleArea.ctx.strokeStyle= "white";
+        myBattleArea.ctx.lineWidth= 3;
+        myBattleArea.ctx.strokeRect(this.x, this.y - 30, this.width, 5);
+        myBattleArea.ctx.fillStyle= "red";
+        myBattleArea.ctx.fillRect(this.x, this.y - 30, this.health/this.maxHealth*this.width, 5);
+    }
     this.drawShield = function(){
         if ((this.energy)>0){
             this.energy--;
@@ -134,7 +154,6 @@ function Replicant(x,y, health){
         myBattleArea.ctx.strokeRect(this.x, this.y + this.height + 30, this.width, 10);
         myBattleArea.ctx.fillStyle= "green";
         myBattleArea.ctx.fillRect(this.x, this.y + this.height + 30, (this.energy+this.recharge)/this.maxEnergy*this.width, 10);
-
     }
     
 }
@@ -174,13 +193,13 @@ function Tempest(x,y, health){
 function EnergyBall(x, y){
     this.x = x;
     this.y = y;
-    this.img = energyBall;
+    this.img = energyBallRotate;
     this.width = 150;
     this.height = 150;
     this.damage = 100;
     this.draw = function(){
         this.x+=3;
-        myBattleArea.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        myBattleArea.ctx.drawImage(this.img, spriteFrames*350, 0, 350, 350, this.x, this.y, this.width, this.height);
     }
 }
 

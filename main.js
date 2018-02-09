@@ -18,14 +18,38 @@ var createUnit=0;
 var oracleTrue=false;
 var exploFrames="Hola";
 var stopGame=0;
-var winners = [{name: "RAU", score: 10, health: 1000},{name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}, {name: "RAU", score: 1000, health: 1000}]
+var winners = [{name: "AAA", score: 0, health: 0}, {name: "AAA", score: 0, health: 0},{name: "AAA", score: 0, health: 0},{name: "AAA", score: 0, health: 0},{name: "AAA", score: 0, health: 0}]
 var notEnough = new Audio('notEnoughResources.mp3');
 var oracleAudio = new Audio('oracleShield.mp3');
 var tempestAudio = new Audio("tempest.wav");
 var replicantAudio = new Audio("replicant.wav");
 var theme = document.getElementById("music");
+var leviathanAudio = new Audio("warning.wav");
 theme.volume = 0.5;
 var difficulty =1;
+var boss = false;
+var spriteFrames=0;
+var score = 0;
+if (localStorage.getItem("FirstName")===null){
+    
+    localStorage.setItem("FirstName", winners[0].name);
+    localStorage.setItem("FirstScore", winners[0].score);
+    localStorage.setItem("FirstHealth", winners[0].health);
+
+    localStorage.setItem("SecondName", winners[1].name);
+    localStorage.setItem("SecondScore", winners[1].score);
+    localStorage.setItem("SecondHealth", winners[1].health);
+
+    localStorage.setItem("ThirdName", winners[2].name);
+    localStorage.setItem("ThirdScore", winners[2].score);
+    localStorage.setItem("ThirdHealth", winners[2].health);
+
+}
+
+winners = [{name: localStorage.getItem("FirstName"), score: localStorage.getItem("FirstScore"), health: localStorage.getItem("FirstHealth")}, {name: localStorage.getItem("SecondName"), score: localStorage.getItem("SecondScore"), health: localStorage.getItem("SecondHealth")},{name: localStorage.getItem("ThirdName"), score: localStorage.getItem("ThirdScore"), health: localStorage.getItem("ThirdHealth")}, {name: localStorage.getItem("FourthName"), score: localStorage.getItem("FourthScore"), health: localStorage.getItem("FourthHealth")},{name: localStorage.getItem("FifthName"), score: localStorage.getItem("FifthScore"), health: localStorage.getItem("FifthHealth")}]
+
+
+
 
 function startGame(){
     resources = 500;
@@ -33,7 +57,7 @@ function startGame(){
     myBattleArea.drawBoard();
     mothership = new Mothership(-myBattleArea.canvas.height/2+50, 0, 500);
     mothership.draw();
-    player = new Player(300, 300, 10);
+    player = new Player(300, 300, 100);
     player.draw();
 };
 
@@ -46,7 +70,13 @@ function updateBattleArea(){
     player.draw();
     player.beamsDraw();
     exploFrames++;
-    if (myBattleArea.frames%1000===0){
+    if (myBattleArea.frames%3===0){
+        spriteFrames++;
+    }
+    if(spriteFrames===20){
+        spriteFrames=0;
+    }
+    if (myBattleArea.frames%1000===0 && boss===false){
         difficulty++;
     }
     //Crear Suicidas
@@ -54,6 +84,7 @@ function updateBattleArea(){
         for (var c=0; c<difficulty; c++){
             myBattleArea.enemies.push(new Suicide(myBattleArea.canvas.width, 20+(Math.random()*(myBattleArea.canvas.height-20)),10));
         }
+        
     }
     //Crear Corruptores
     if (myBattleArea.frames%400===0){
@@ -68,13 +99,20 @@ function updateBattleArea(){
         }
     }
 
+    if (myBattleArea.frames%2000===0){
+        myBattleArea.enemies.push(new Leviathan(Math.random()*myBattleArea.canvas.width*1/3+myBattleArea.canvas.width/3, -myBattleArea.canvas.height, 100000));
+        leviathanAudio.play();
+    }
+
     //Mover los enemigos
     for (var i = 0; i<myBattleArea.enemies.length;i++){
         if (myBattleArea.enemies[i].paralyze===0){
             //Los Corruptors se plantan
-            if (myBattleArea.enemies[i].type!=1 && myBattleArea.enemies[i].x<(myBattleArea.canvas.width-200)){
-
-            } else{
+            if (myBattleArea.enemies[i].type>1 && myBattleArea.enemies[i].type<4 && myBattleArea.enemies[i].x<(myBattleArea.canvas.width-200)){
+                //Nada!
+            } else if (myBattleArea.enemies[i].type===4){
+                myBattleArea.enemies[i].y+=3;
+            } else {
                 myBattleArea.enemies[i].x-=2;
             //Cada 10 frames se mueven en el eje Y
                 if (myBattleArea.frames%10===0){
@@ -149,6 +187,13 @@ function updateBattleArea(){
                 return;
             }
             myBattleArea.enemies.splice(index,1);
+        } else if (enemy.crashWith(player) && enemy.type===4){
+            player.health-=enemy.damage;
+            if (player.health<=0){
+                // Game Ends
+                myBattleArea.stop();
+                return;
+            }
         }
         if (enemy.crashWith(mothership) && enemy.type===1){
             exploX =  enemy.x;
@@ -162,7 +207,7 @@ function updateBattleArea(){
                 myBattleArea.stop();
                 return;
             }
-        }
+        } 
         myBattleArea.units.forEach(function(unit, indexU){
             if (unit.type==="R" && unit.energy>0){
                 shield={
@@ -206,6 +251,14 @@ function updateBattleArea(){
                     myBattleArea.units.splice(indexU,1);
                 }
                 myBattleArea.enemies.splice(index,1);
+            } else if (enemy.crashWith(unit) && enemy.type===4){
+                myBattleArea.units[indexU].health-=enemy.damage;
+                if (myBattleArea.units[indexU].health<=0){
+                    if (unit.type="O"){
+                        oracleTrue=false;
+                    }
+                    myBattleArea.units.splice(indexU,1);
+                }
             }
         })
     })
@@ -267,43 +320,69 @@ function updateBattleArea(){
         myBattleArea.ctx.font="40px serif";
         myBattleArea.ctx.fillStyle="white"
         gameStatus=0;
-        if (Math.floor(myBattleArea.frames/100)>=winners[0].score){
-            winners.pop();
-            myBattleArea.ctx.fillText("HIGH SCORE!", 460, 50);
-            myBattleArea.ctx.fillText("Final Score: "+Math.floor(myBattleArea.frames/100)+" Health: "+mothership.health, 450, 150)
-            myBattleArea.ctx.fillText("TYPE NAME", 460, 250);
-            var letterCounter=0;
-            winName="";
-            document.onkeydown=function(e){
-                if (letterCounter<3 && e.keyCode>=65 && e.keyCode<=90){
-                myBattleArea.ctx.fillText(e.key.toUpperCase(), 480+letterCounter*30, 300);
-                
-                winName+=e.key.toUpperCase();
-                letterCounter++;
-                } else if (letterCounter===3){
-                    letterCounter++;
-                    updateHigh();
+        counterHigh=0
+        highScore=false;
+        if (Math.floor(myBattleArea.frames/100)>=winners[winners.length-1].score){
+            for (var g=0; g<winners.length ;g++){
+                if (Math.floor(myBattleArea.frames/100)>winners[g].score){
+                    highScore=true;
+                    break;
+                } else if (Math.floor(myBattleArea.frames/100)==winners[g].score){
+                    if (mothership.health>=winners[g].health){
+                        highScore=true;
+                        break;
+                    }
                 }
-            } 
+                counterHigh++;
+            }
+            if (highScore){
+                myBattleArea.ctx.fillText("HIGH SCORE!", 460, 50);
+                myBattleArea.ctx.fillText("Final Score: "+Math.floor(myBattleArea.frames/100)+" Health: "+mothership.health, 450, 150)
+                myBattleArea.ctx.fillText("TYPE NAME", 460, 250);
+                var letterCounter=0;
+                winName="";
+                document.onkeydown=function(e){
+                    if (letterCounter<3 && e.keyCode>=65 && e.keyCode<=90){
+                        myBattleArea.ctx.fillText(e.key.toUpperCase(), 480+letterCounter*30, 300);
+                        winName+=e.key.toUpperCase();
+                        letterCounter++;
+                        if (letterCounter===3){
+                            updateHigh();
+                        }
+                    }
+                } 
+            } else {
+                myBattleArea.ctx.fillText("TOP DEFENDERS", 450, 50);
+                myBattleArea.ctx.font="30px serif";
+                myBattleArea.ctx.fillStyle="green"
+                myBattleArea.ctx.fillText("Final Score: "+Math.floor(myBattleArea.frames/100)+" Health: "+mothership.health, 450, 150)
+                myBattleArea.ctx.fillStyle="white"
+                for (var w=0; w<winners.length; w++){
+                    myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
+                }
+                myBattleArea.ctx.fillText("Press Enter to Play Again", 410, 450)
+                document.onkeydown=function(e){
+                    if (e.keyCode===13){
+                        location.reload();
+                    }
+                } 
+            }
         } else{
-            
-            
             myBattleArea.ctx.fillText("TOP DEFENDERS", 450, 50);
             myBattleArea.ctx.font="30px serif";
             myBattleArea.ctx.fillStyle="green"
             myBattleArea.ctx.fillText("Final Score: "+Math.floor(myBattleArea.frames/100)+" Health: "+mothership.health, 450, 150)
             myBattleArea.ctx.fillStyle="white"
             for (var w=0; w<winners.length; w++){
-            
                 myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
             }
+            myBattleArea.ctx.fillText("Press Enter to Play Again", 410, 450)
             document.onkeydown=function(e){
                 if (e.keyCode===13){
                     location.reload();
                 }
-            } 
+            }
         }
-        
     }
 }
     
@@ -312,17 +391,47 @@ function updateHigh(){
     myBattleArea.ctx.fillRect(0,0, myBattleArea.canvas.width, myBattleArea.canvas.height);
     myBattleArea.ctx.fillStyle="white";
     myBattleArea.ctx.fillText("TOP DEFENDERS", 450, 50);
-    winners.unshift({name: winName, score: Math.floor(myBattleArea.frames/100), health: mothership.health});
-    for (var w=0; w<winners.length; w++){        
-        myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
+    winners.pop();
+    winners.splice(counterHigh, 0, {name: winName, score: Math.floor(myBattleArea.frames/100), health: mothership.health});
+    for (var w=0; w<winners.length; w++){  
+        console.log(w, counterHigh)
+        if (w==counterHigh){
+            myBattleArea.ctx.fillStyle="red";
+            myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
+        }   else {
+            myBattleArea.ctx.fillStyle="white";
+            myBattleArea.ctx.fillText((w+1)+". "+winners[w].name + " Score: "+winners[w].score+" Health: "+winners[w].health, 390, 200+50*w)
+        }   
     }
+
+    localStorage.setItem("FirstName", winners[0].name);
+    localStorage.setItem("FirstScore", winners[0].score);
+    localStorage.setItem("FirstHealth", winners[0].health);
+
+    localStorage.setItem("SecondName", winners[1].name);
+    localStorage.setItem("SecondScore", winners[1].score);
+    localStorage.setItem("SecondHealth", winners[1].health);
+
+    localStorage.setItem("ThirdName", winners[2].name);
+    localStorage.setItem("ThirdScore", winners[2].score);
+    localStorage.setItem("ThirdHealth", winners[2].health);
+
+    localStorage.setItem("FourthName", winners[3].name);
+    localStorage.setItem("FourthScore", winners[3].score);
+    localStorage.setItem("FourthHealth", winners[3].health);
+
+    localStorage.setItem("FifthName", winners[4].name);
+    localStorage.setItem("FifthScore", winners[4].score);
+    localStorage.setItem("FifthHealth", winners[4].health);
+    myBattleArea.ctx.fillStyle="white";
+    myBattleArea.ctx.fillText("Press Enter to Play Again", 410, 450)
     document.onkeydown=function(e){
         if (e.keyCode===13){
+
             location.reload();
         }
     } 
 }
-
 document.onkeydown=function(e){
     switch (e.keyCode){
         case 37:

@@ -7,6 +7,8 @@ var corruptBallSprite = new Image;
 corruptBallSprite.src = "images/corruptionBall.png"
 var broodlordSprite = new Image;
 broodlordSprite.src = "images/broodlord.png"
+var leviathanSprite = new Image;
+leviathanSprite.src = "images/leviathanVertical.png"
 
 function Enemy(x, y, health){
     this.x = x;
@@ -98,4 +100,18 @@ function Broodlord(x, y, health){
 Broodlord.prototype.crashWith = function(unit){
     var distance = Math.sqrt(Math.pow(unit.x+unit.width/2-this.x-this.width/2,2)+Math.pow(unit.y+unit.height/2-this.y-this.height/2,2))
     return (distance<=unit.width*0.5);
+}
+
+function Leviathan(x, y, health){
+    Enemy.call(this, x, y, health);
+    this.img = leviathanSprite;
+    this.width = myBattleArea.canvas.height;
+    this.height = myBattleArea.canvas.height;
+    this.type=4;
+    this.energy=0;
+}
+
+Leviathan.prototype.crashWith = function(unit){
+    var distance = Math.sqrt(Math.pow(unit.x+unit.width/2-this.x-this.width/2,2)+Math.pow(unit.y+unit.height/2-this.y-this.height/2,2))
+    return (distance<=this.width*0.5);
 }
