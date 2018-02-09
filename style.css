@@ -1,7 +1,7 @@
 body {
     padding: 0;
     text-align: center;
-    background-image: url("images/background5.jpg");
+    background-image: url("images/blueSpace.jpg");
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -64,4 +64,16 @@ body {
 
   .hidden{
     display: none;
+  }
+
+  .replicant{
+    cursor: url(images/replicantCursor.png), auto;
+  }
+
+  .tempest{
+    cursor: url(images/tempestCursor.png), auto;
+  }
+
+  .oracle{
+    cursor: url(images/oracleCursor.png), auto;
   }

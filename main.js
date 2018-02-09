@@ -48,9 +48,6 @@ if (localStorage.getItem("FirstName")===null){
 
 winners = [{name: localStorage.getItem("FirstName"), score: localStorage.getItem("FirstScore"), health: localStorage.getItem("FirstHealth")}, {name: localStorage.getItem("SecondName"), score: localStorage.getItem("SecondScore"), health: localStorage.getItem("SecondHealth")},{name: localStorage.getItem("ThirdName"), score: localStorage.getItem("ThirdScore"), health: localStorage.getItem("ThirdHealth")}, {name: localStorage.getItem("FourthName"), score: localStorage.getItem("FourthScore"), health: localStorage.getItem("FourthHealth")},{name: localStorage.getItem("FifthName"), score: localStorage.getItem("FifthScore"), health: localStorage.getItem("FifthHealth")}]
 
-
-
-
 function startGame(){
     resources = 500;
     myBattleArea.start();
@@ -438,15 +435,19 @@ function updateHigh(){
 document.onkeydown=function(e){
     switch (e.keyCode){
         case 37:
+        case 65:
         player.moveLeft();
         break;
         case 38:
+        case 87:
         player.moveUp();
         break;
         case 39:
+        case 68:
         player.moveRight();
         break;
         case 40:
+        case 83:
         player.moveDown();
         break;
         case 32:
@@ -459,6 +460,7 @@ document.getElementById("replicant").onclick = function(){
     if (createUnit===0){
         createUnit=1;
         unitCreate="replicant";
+        myBattleArea.canvas.classList.add("replicant");
     }
 };
 
@@ -466,6 +468,7 @@ document.getElementById("tempest").onclick = function(){
     if (createUnit===0){
         createUnit=1;
         unitCreate="tempest";
+        myBattleArea.canvas.classList.add("tempest");
     }
 };
 
@@ -473,6 +476,7 @@ document.getElementById("oracle").onclick = function(){
     if (createUnit===0){
         createUnit=1;
         unitCreate="oracle";
+        myBattleArea.canvas.classList.add("oracle");
     }
 };
 
@@ -488,6 +492,7 @@ myBattleArea.canvas.addEventListener('click', function(e) {
                 notEnough.play();
             }
             createUnit=0;
+            myBattleArea.canvas.classList.remove("replicant");
             break;
             case "tempest":
             if (resources>=200){
@@ -497,6 +502,7 @@ myBattleArea.canvas.addEventListener('click', function(e) {
             }else{
                 notEnough.play();
             };
+            myBattleArea.canvas.classList.remove("tempest");
             createUnit=0;
             break;
             case "oracle":
@@ -509,6 +515,7 @@ myBattleArea.canvas.addEventListener('click', function(e) {
                 notEnough.play();
             };
             createUnit=0;
+            myBattleArea.canvas.classList.remove("oracle");
             break;
         }
     }
