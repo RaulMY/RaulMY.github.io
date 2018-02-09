@@ -23,6 +23,7 @@ var oracle = new Image;
 oracle.src = "images/oracle.png";
 var paralyzeField = new Image;
 paralyzeField.src = "images/paralyzeField.png"
+var shootAudio = new Audio("shoot.wav")
 
 function Unit(x, y, health){
     this.x=x;
@@ -86,6 +87,7 @@ function Player(x, y, health){
     this.beams = [];
     this.shoot = function(){
         this.beams.push(new Beam(this.x+this.width+10, this.y+this.height/2-10));
+        shootAudio.play();
     }
     this.beamsDraw=function(){
         this.beams.forEach(function(beam){

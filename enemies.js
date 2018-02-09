@@ -113,5 +113,5 @@ function Leviathan(x, y, health){
 
 Leviathan.prototype.crashWith = function(unit){
     var distance = Math.sqrt(Math.pow(unit.x+unit.width/2-this.x-this.width/2,2)+Math.pow(unit.y+unit.height/2-this.y-this.height/2,2))
-    return (distance<=this.width*0.5);
+    return (distance<=this.width*0.6);
 }

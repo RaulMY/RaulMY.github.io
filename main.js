@@ -100,13 +100,13 @@ function updateBattleArea(){
     }
 
     if (myBattleArea.frames%2000===0){
-        myBattleArea.enemies.push(new Leviathan(Math.random()*myBattleArea.canvas.width*1/3+myBattleArea.canvas.width/3, -myBattleArea.canvas.height, 100000));
+        myBattleArea.enemies.push(new Leviathan(Math.random()*myBattleArea.canvas.width*1/6+myBattleArea.canvas.width/3, -myBattleArea.canvas.height, 100000));
         leviathanAudio.play();
     }
 
     //Mover los enemigos
     for (var i = 0; i<myBattleArea.enemies.length;i++){
-        if (myBattleArea.enemies[i].paralyze===0){
+        if (myBattleArea.enemies[i].paralyze===0 || myBattleArea.enemies[i].type===4){
             //Los Corruptors se plantan
             if (myBattleArea.enemies[i].type>1 && myBattleArea.enemies[i].type<4 && myBattleArea.enemies[i].x<(myBattleArea.canvas.width-200)){
                 //Nada!
@@ -322,6 +322,9 @@ function updateBattleArea(){
         gameStatus=0;
         counterHigh=0
         highScore=false;
+        if (mothership.health<0){
+            mothership.health=0;
+        }
         if (Math.floor(myBattleArea.frames/100)>=winners[winners.length-1].score){
             for (var g=0; g<winners.length ;g++){
                 if (Math.floor(myBattleArea.frames/100)>winners[g].score){

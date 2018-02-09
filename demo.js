@@ -1,5 +1,11 @@
 var spaceBar = new Image;
 spaceBar.src="images/spaceBar.png"
+var buttonReplicant = new Image;
+buttonReplicant.src="images/buttonReplicant.png"
+var buttonTempest = new Image;
+buttonTempest.src="images/buttonTempest.png"
+var buttonOracle = new Image;
+buttonOracle.src="images/buttonOracle.png"
 window.onload = function() {
     
     var demoCanvas = document.getElementById("demoCanvas");
@@ -42,9 +48,10 @@ window.onload = function() {
         if (demoframes>=350 && demoframes < 500){
             demoCtx.font = "40px serif";
             demoCtx.fillStyle = "white";
-            demoCtx.fillText("Use your resources to create shields!", 275, 50);
+            demoCtx.fillText("Click the buttons to create new units to defend!", 350, 50);
             demoCtx.drawImage(replicant, 150, 150, 100, 100);
             demoCtx.drawImage(energyShield, 100, 100, 200, 200);
+            demoCtx.drawImage(buttonReplicant, 30, 10, 250, 75);
             if (demoframes<445){
                 demoCtx.drawImage(kamikaze, 1200-demoframes*10+3500, 137.5, 25, 25);
             }
@@ -52,16 +59,18 @@ window.onload = function() {
         if (demoframes>=500 && demoframes <650){
             demoCtx.font = "40px serif";
             demoCtx.fillStyle = "white";
-            demoCtx.fillText("Or powerful offensive units!", 275, 50);
+            demoCtx.fillText("And attack!", 350, 50);
             demoCtx.drawImage(tempest, 50, 100, 200, 200);
             demoCtx.drawImage(energyBall, 250+demoframes*10-5000, 100, 200, 200);
+            demoCtx.drawImage(buttonTempest,  30, 10, 250, 75);
         }
         if (demoframes>=650 && demoframes <800){
             demoCtx.font = "40px serif";
             demoCtx.fillStyle = "white";
-            demoCtx.fillText("And even to paralyze your enemies!", 275, 50);
+            demoCtx.fillText("And even to paralyze your enemies!", 350, 50);
             demoCtx.drawImage(oracle, 500, 150, 100, 100);
             demoCtx.drawImage(paralyzeField, 400, 50, 300, 300);
+            demoCtx.drawImage(buttonOracle,  30, 10, 250, 75);
             if (demoframes<710){
                 demoCtx.drawImage(kamikaze, 1200-demoframes*10+6500, 137.5, 25, 25);
                 demoCtx.drawImage(kamikaze, 1200-demoframes*10+6500, 87.5, 25, 25);
