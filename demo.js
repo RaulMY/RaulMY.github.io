@@ -6,19 +6,37 @@ var buttonTempest = new Image;
 buttonTempest.src="images/buttonTempest.png"
 var buttonOracle = new Image;
 buttonOracle.src="images/buttonOracle.png"
+var arrows = new Image;
+arrows.src="images/arrows.png"
+var wasd= new Image;
+wasd.src="images/wasd.png"
+var cursor = new Image;
+cursor.src="images/cursor.png"
 window.onload = function() {
     
     var demoCanvas = document.getElementById("demoCanvas");
     var demoCtx = demoCanvas.getContext("2d");
-    var demoframes = 0;
+    var demoframes = -300;
     var demoInterval = setInterval(updateDemo, 20);
 
     function updateDemo(){
         demoframes++;
         demoCtx.clearRect(0, 0, 1200, 375);
-        if (demoframes<200){
+        if (demoframes<0){
             demoCtx.font = "40px serif";
             demoCtx.fillStyle = "white";
+            demoCtx.fillText("Use the arrow/wasd keys to move around", 275, 50);
+            demoCtx.drawImage(wasd, 100, 100, 150, 150);
+            demoCtx.drawImage(arrows, 950, 100, 150, 150);
+            if (demoframes<-250){
+                demoCtx.drawImage(hero, 300, -375-demoframes*2, 100, 100);
+            } else if (demoframes<-100){
+                demoCtx.drawImage(hero, 1550+demoframes*5, 125, 100, 100);
+            } else{
+                demoCtx.drawImage(hero, 1050, 625+demoframes*5, 100, 100);
+            }
+        }
+        if (demoframes>=0 && demoframes<200){
             demoCtx.fillText("Defend the Mothership from the Invaders!", 275, 50);
             demoCtx.drawImage(mothershipSprite, 100, 100, 200, 200);
             demoCtx.drawImage(kamikaze, 1200-demoframes*5, 100, 25, 25);
@@ -28,8 +46,6 @@ window.onload = function() {
             demoCtx.drawImage(kamikaze, 1200-demoframes*5, 300, 25, 25);
         }
         if (demoframes>=200 && demoframes<350){
-            demoCtx.font = "40px serif";
-            demoCtx.fillStyle = "white";
             demoCtx.fillText("Shoot them with your ship by pressing", 275, 50);
             demoCtx.drawImage(hero, 100, 100, 100, 100);
             if (demoframes<300){
@@ -50,20 +66,22 @@ window.onload = function() {
 
         }
         if (demoframes>=350 && demoframes < 600){
-            demoCtx.font = "40px serif";
-            demoCtx.fillStyle = "white";
             demoCtx.fillText("Use those resources to create new units to defend!", 350, 50);
-            demoCtx.drawImage(replicant, 150, 150, 100, 100);
-            demoCtx.drawImage(energyShield, 100, 100, 200, 200);
+
             demoCtx.drawImage(buttonReplicant, 30, 10, 250, 75);
+            if (demoframes>360 && demoframes <= 400){
+                demoCtx.drawImage(cursor, 30+(demoframes-360)*5, 10+(demoframes-360)*5, 30, 30);
+            }
+            if (demoframes>400){
+                demoCtx.drawImage(replicant, 150, 150, 100, 100);
+                demoCtx.drawImage(energyShield, 100, 100, 200, 200);
+            }
             if (demoframes<445){
                 demoCtx.drawImage(kamikaze, 1200-demoframes*10+3500, 137.5, 25, 25);
             }
             demoCtx.fillText("Just click the Unit button and then click the battlefield!", 250, 350);
         }
         if (demoframes>=600 && demoframes <850){
-            demoCtx.font = "40px serif";
-            demoCtx.fillStyle = "white";
             demoCtx.fillText("Create powerful offensive units", 350, 50);
             demoCtx.drawImage(tempest, 50, 100, 200, 200);
             demoCtx.drawImage(energyBall, 250+demoframes*10-6000, 100, 200, 200);
@@ -71,8 +89,6 @@ window.onload = function() {
             demoCtx.fillText("Just click the Unit button and then click the battlefield!", 250, 350);
         }
         if (demoframes>=850 && demoframes <1050){
-            demoCtx.font = "40px serif";
-            demoCtx.fillStyle = "white";
             demoCtx.fillText("And even units to paralyze your enemies!", 350, 50);
             demoCtx.drawImage(oracle, 500, 150, 100, 100);
             demoCtx.drawImage(paralyzeField, 400, 50, 300, 300);
@@ -89,8 +105,6 @@ window.onload = function() {
             }
         }
         if (demoframes>=1050 && demoframes <1300){
-            demoCtx.font = "40px serif";
-            demoCtx.fillStyle = "white";
             demoCtx.fillText("Destroy the more powerful enemies before they use their abilities!", 50, 50);
             if (demoframes<1110){
                 demoCtx.drawImage(broodlordSprite, 1200-demoframes*5+5250, 100, 100, 100);
@@ -106,7 +120,7 @@ window.onload = function() {
             }
         }
         if (demoframes>1300){
-            demoframes=0;
+            demoframes=-300;
         }
     }   
 

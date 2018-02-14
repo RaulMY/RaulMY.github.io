@@ -23,7 +23,7 @@ var oracle = new Image;
 oracle.src = "images/oracle.png";
 var paralyzeField = new Image;
 paralyzeField.src = "images/paralyzeField.png"
-var shootAudio = new Audio("shoot.wav")
+var shootAudio = new Audio("sounds/shoot.wav")
 
 function Unit(x, y, health){
     this.x=x;

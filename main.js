@@ -19,12 +19,12 @@ var oracleTrue=false;
 var exploFrames="Hola";
 var stopGame=0;
 var winners = [{name: "AAA", score: 0, health: 0}, {name: "AAA", score: 0, health: 0},{name: "AAA", score: 0, health: 0},{name: "AAA", score: 0, health: 0},{name: "AAA", score: 0, health: 0}]
-var notEnough = new Audio('notEnoughResources.mp3');
-var oracleAudio = new Audio('oracleShield.mp3');
-var tempestAudio = new Audio("tempest.wav");
-var replicantAudio = new Audio("replicant.wav");
+var notEnough = new Audio('sounds/notEnoughResources.mp3');
+var oracleAudio = new Audio('sounds/oracleShield.mp3');
+var tempestAudio = new Audio("sounds/tempest.wav");
+var replicantAudio = new Audio("sounds/replicant.wav");
 var theme = document.getElementById("music");
-var leviathanAudio = new Audio("warning.wav");
+var leviathanAudio = new Audio("sounds/warning.wav");
 theme.volume = 0.5;
 var difficulty =1;
 var boss = false;
@@ -105,7 +105,7 @@ function updateBattleArea(){
     }
 
     if (myBattleArea.frames%2000===0){
-        myBattleArea.enemies.push(new Leviathan(Math.random()*myBattleArea.canvas.width*1/6+myBattleArea.canvas.width/3, -myBattleArea.canvas.height, 100000));
+        myBattleArea.enemies.push(new Leviathan(Math.random()*myBattleArea.canvas.width*1/6+myBattleArea.canvas.width/4, -myBattleArea.canvas.height, 100000));
         leviathanAudio.play();
     }
 
